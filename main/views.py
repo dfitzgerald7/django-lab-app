@@ -2,10 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from django.contrib.auth.models import User
 # Create your views here.
 
 def homepage(request):
-    return render(request, 'main/homepage.html')
+    return render(request, 
+                  'main/homepage.html',
+                  context={'labs': request.user.lab_set.all()})
 
 def signup(request):
     if request.method == "POST":  
@@ -52,3 +55,6 @@ def logout_request(request):
     logout(reqeust)
     messages.info(request, 'Logged out successfully')
     return redirect('main:homepage')
+
+def new_lab(request):
+    

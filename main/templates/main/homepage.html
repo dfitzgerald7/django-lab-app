@@ -1,5 +1,10 @@
 {% extends "main/main_html.html" %}
 
 {% block content %}
-    <h1> Hello World </h1>  
+    {% if user.is_authenticated %}
+        <h3> Labs to be completed </h3>
+        {% for lab in labs %}
+            {{ lab.title }}
+        {% endfor %}
+    {% endif %}
 {% endblock %}
