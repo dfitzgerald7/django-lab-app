@@ -1,0 +1,12 @@
+A lab app that will have many labs that will have many todo items
+
+calender that you can book labs 
+
+
+for a given lab, you can input several to dos
+also input data
+    set the experiment to 10mins
+    everymin input data
+    each experiment has many data points. 
+    potentially a simple graph component once data collection is complete
+
