@@ -1,10 +1,13 @@
 {% extends "main/main_html.html" %}
 
 {% block content %}
-    {% if user.is_authenticated %}
+    {% if logged_in == True%}
         <h3> Labs to be completed </h3>
         {% for lab in labs %}
             {{ lab.title }}
         {% endfor %}
+
+    {% else %}
+        <h3> Please log in to use this app. </h3>
     {% endif %}
 {% endblock %}

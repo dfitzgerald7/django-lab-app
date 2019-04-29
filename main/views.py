@@ -6,9 +6,16 @@ from django.contrib.auth.models import User
 # Create your views here.
 
 def homepage(request):
-    return render(request, 
-                  'main/homepage.html',
-                  context={'labs': request.user.lab_set.all()})
+    if request.user.is_authenticated:
+        print(request.user.lab_set.all())
+        return render(request, 
+                    'main/homepage.html',
+                    context={'labs': request.user.lab_set.all(),
+                            'logged_in': True})
+    else: 
+        return render(request,
+                      'main/homepage.html', 
+                      {'logged_in': False})
 
 def signup(request):
     if request.method == "POST":  
@@ -52,9 +59,10 @@ def login_request(request):
 
 
 def logout_request(request):
-    logout(reqeust)
+    logout(request)
     messages.info(request, 'Logged out successfully')
     return redirect('main:homepage')
 
 def new_lab(request):
+    return 
     
