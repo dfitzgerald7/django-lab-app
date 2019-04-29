@@ -10,6 +10,7 @@ class Lab(models.Model):
     start_date = models.DateField()
     due_date = models.DateField()
     users = models.ManyToManyField(User)
+    completed = models.BooleanField(default=False)
 
     class Meta: 
         verbose_name_plural = 'Labs'
@@ -19,7 +20,7 @@ class Lab(models.Model):
 
 class Todo(models.Model):
     title = models.CharField(max_length=50)
-    completeBool = models.BooleanField()
+    completed = models.BooleanField(default=False)
     lab = models.ForeignKey(Lab, default=1, verbose_name=("Lab"), on_delete=models.SET_DEFAULT)
     
     class Meta: 
