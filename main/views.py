@@ -72,7 +72,7 @@ def new_lab(request):
             lab = form.save()
             lab.users.add(request.user)
             # lab.save()
-            return redirect('main:homepage')
+            return redirect('main:new_todos')
         else: 
             for msg in form.error_messages:
                 messages.error(request, f"{msg}:{form.error_messages[msg]}")
@@ -83,4 +83,19 @@ def new_lab(request):
         
 
 
-    
+def new_todos(request):
+    if request.method == "POST":
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            todo = form.save()
+            lab.todo_set.add(todo)
+            # lab.save()
+            return redirect('main:homepage')
+        else: 
+            for msg in form.error_messages:
+                messages.error(request, f"{msg}:{form.error_messages[msg]}")
+    form = TodoForm
+    return render(request,
+                  'main/labs/new.html',
+                  {'form': form})
+        
