@@ -2,8 +2,14 @@
 
 {% block content %}
     {% if logged_in == True%}
+        <h3> Completed Labs </h3>
+        {% for lab in completed %}
+            {{ lab.title }} <br>
+            {{ lab.description }}
+            <br><br>
+        {% endfor %}
         <h3> Labs to be completed </h3>
-        {% for lab in labs %}
+        {% for lab in incompleted %}
             {{ lab.title }} <br>
             {{ lab.description }}
             <a href={% url 'main:lab_show' lab_id=lab.id %}> View this lab </a>

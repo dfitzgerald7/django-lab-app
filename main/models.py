@@ -18,6 +18,15 @@ class Lab(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        print('in save')
+        todos = Todo.objects.filter(lab=self, completed=False)
+        print(todos, self.id)
+        print(len(todos) == 0 and self.id is not None)
+        if len(todos) == 0 and self.id: 
+            self.completed = True
+        super(Lab, self).save(*args, **kwargs)
+
 class Todo(models.Model):
     title = models.CharField(max_length=50)
     completed = models.BooleanField(default=False)

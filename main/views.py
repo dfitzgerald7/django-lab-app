@@ -12,9 +12,11 @@ import ipdb
 
 def homepage(request):
     if request.user.is_authenticated:
+        completed = Lab.objects.filter(users=request.user, completed=True)
+        incompleted = Lab.objects.filter(users=request.user, completed=False)
         return render(request, 
                     'main/homepage.html',
-                    context={'labs': request.user.lab_set.all(),
+                    context={'completed': completed, 'incompleted': incompleted,
                             'logged_in': True})
     else: 
         return render(request,
@@ -106,12 +108,9 @@ def lab_show(request, lab_id):
             for todo in form.cleaned_data['todos']:
                 todo.completed = True
                 todo.save()
-                # .completed = True
-                
-                # todo.completed = True
-            return redirect('main:homepage')
+            
 
-        # else :
+        lab.save()
         return redirect('main:homepage')
 
     return render(request, 'main/labs/show.html', 
