@@ -3,7 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import LabForm
+from .forms import LabForm, TodoForm, TodoFormSet
+from django.forms import formset_factory
 # Create your views here.
 
 def homepage(request):
@@ -65,37 +66,22 @@ def logout_request(request):
     return redirect('main:homepage')
 
 def new_lab(request):
-    
+    todo_formset = formset_factory(TodoForm)
     if request.method == "POST":
         form = LabForm(request.POST)
+        todos = todo_formset(request.POST)
         if form.is_valid():
             lab = form.save()
             lab.users.add(request.user)
             # lab.save()
-            return redirect('main:new_todos')
+            return redirect('main:homepage')
         else: 
             for msg in form.error_messages:
                 messages.error(request, f"{msg}:{form.error_messages[msg]}")
     form = LabForm
     return render(request,
                   'main/labs/new.html',
-                  {'form': form})
-        
-
-
-def new_todos(request):
-    if request.method == "POST":
-        form = TodoForm(request.POST)
-        if form.is_valid():
-            todo = form.save()
-            lab.todo_set.add(todo)
-            # lab.save()
-            return redirect('main:homepage')
-        else: 
-            for msg in form.error_messages:
-                messages.error(request, f"{msg}:{form.error_messages[msg]}")
-    form = TodoForm
-    return render(request,
-                  'main/labs/new.html',
-                  {'form': form})
+                  {'form': form,
+                    'todo_form': todo_formset
+                  })
         

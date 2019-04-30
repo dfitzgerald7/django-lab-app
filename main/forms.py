@@ -1,10 +1,10 @@
 from django import forms
 from .models import Lab, Todo
+from django.forms import inlineformset_factory
 # from django.contrib.admin.widgets import SelectDateWidget
 
 class LabForm(forms.ModelForm):
     title = forms.CharField(max_length=100)
-    content = forms.CharField(max_length=200)
     start_date = forms.DateField()
     due_date = forms.DateField()
 
@@ -22,3 +22,6 @@ class TodoForm(forms.ModelForm):
     class Meta:
         model = Todo
         fields = ['title']
+
+
+TodoFormSet = inlineformset_factory(Lab, Todo, form=TodoForm)

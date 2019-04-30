@@ -26,6 +26,5 @@ urlpatterns = [
     path('logout/', views.logout_request, name='logout'),
     path('login/', views.login_request, name='login'),
     path('labs/new', views.new_lab, name='new_lab'),
-    path('todos/new', views.new_todos, name='new_todos'),
 
 ]
