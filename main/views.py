@@ -5,6 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import LabForm, TodoForm, TodoFormSet
 from django.forms import formset_factory
+from django.forms import modelformset_factory
+from .models import Todo, Lab
+import ipdb
 # Create your views here.
 
 def homepage(request):
@@ -67,13 +70,19 @@ def logout_request(request):
 
 def new_lab(request):
     todo_formset = formset_factory(TodoForm)
+    # todo_formset = modelformset_factory(Todo, fields=('title',))
     if request.method == "POST":
         form = LabForm(request.POST)
-        todos = todo_formset(request.POST)
-        if form.is_valid():
+        todos_form = todo_formset(request.POST)
+        if form.is_valid() & todos_form.is_valid():
             lab = form.save()
             lab.users.add(request.user)
-            # lab.save()
+           
+            for todo_f in todos_form:
+                if todo_f.is_valid():
+                    ipdb.post_mortem()
+                    todo = todo_f.save()
+                    lab.todo_set.add(todo)
             return redirect('main:homepage')
         else: 
             for msg in form.error_messages:
@@ -85,3 +94,9 @@ def new_lab(request):
                     'todo_form': todo_formset
                   })
         
+def lab_show(request, lab_id):
+    lab = Lab.objects.get(pk=lab_id)
+    todos = Todo.objects.filter(lab__pk=lab_id)
+
+    return render(request, 'main/labs/show.html', 
+                    context={'lab':lab, 'todos':todos} )
