@@ -4,7 +4,25 @@
 {% block content %}
     <h3> {{ lab }} </h3>
 
-    {% for todo in todos %}
-        {{ todo }} <br>
+    <h4> Completed Tasks </h4>
+    {% for task in completed %}    
+        {{ task }}
     {% endfor %}
+    <br>
+    <h4> To Be Completed</h4>
+    <!-- <form method="POST">
+        {% csrf_token %}
+        {% for todo in todos %}
+            <input id={{todo.id}} type="checkbox"> {{todo}} </input> <br>
+        {% endfor %}
+        <button type="submit" > Submit Changes </button>
+    </form> -->
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" > Submit Changes </button>
+    </form>
+
+
 {% endblock %}

@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import LabForm, TodoForm, TodoFormSet
+from .forms import LabForm, TodoForm, TodoFormSet, TodoCheckboxForm
 from django.forms import formset_factory
 from django.forms import modelformset_factory
 from .models import Todo, Lab
@@ -12,7 +12,6 @@ import ipdb
 
 def homepage(request):
     if request.user.is_authenticated:
-        print(request.user.lab_set.all())
         return render(request, 
                     'main/homepage.html',
                     context={'labs': request.user.lab_set.all(),
@@ -96,7 +95,24 @@ def new_lab(request):
         
 def lab_show(request, lab_id):
     lab = Lab.objects.get(pk=lab_id)
-    todos = Todo.objects.filter(lab__pk=lab_id)
+    completed = Todo.objects.filter(lab__pk=lab_id, completed=True)
+    todos = Todo.objects.filter(lab__pk=lab_id, completed=False)
+    checkbox_form = TodoCheckboxForm(lab)
+
+    if request.method == "POST":
+        form = TodoCheckboxForm(lab, request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+            for todo in form.cleaned_data['todos']:
+                todo.completed = True
+                todo.save()
+                # .completed = True
+                
+                # todo.completed = True
+            return redirect('main:homepage')
+
+        # else :
+        return redirect('main:homepage')
 
     return render(request, 'main/labs/show.html', 
-                    context={'lab':lab, 'todos':todos} )
+                    context={'lab':lab, 'completed':completed, 'todos': todos, 'form': checkbox_form} )

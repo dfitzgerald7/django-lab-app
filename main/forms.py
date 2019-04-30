@@ -23,5 +23,32 @@ class TodoForm(forms.ModelForm):
         model = Todo
         fields = ['title']
 
+class TodoCheckboxForm(forms.Form):
+
+    # todos = forms.ModelMultipleChoiceField(
+    #                     widget = forms.CheckboxSelectMultiple,
+    #                     queryset = Todo.objects.all()
+    # #            )
+
+    # todos = forms.choi
+
+    # todos = forms.BooleanField
+
+    # class Meta:
+    #     model = Todos
+    #     fields = ['todos']
+
+    def __init__(self, lab, *args, **kwargs):
+        super(TodoCheckboxForm, self).__init__(*args, **kwargs)
+        # todos = Todo.objects.filter(lab=lab, completed=False)
+        self.fields['todos'] = forms.ModelMultipleChoiceField(
+                                widget = forms.CheckboxSelectMultiple,
+                                queryset = Todo.objects.filter(lab=lab, completed=False)
+                                )
+        
+        
+
+
+
 
 TodoFormSet = inlineformset_factory(Lab, Todo, form=TodoForm)
