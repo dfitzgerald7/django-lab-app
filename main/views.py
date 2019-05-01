@@ -7,13 +7,14 @@ from .forms import LabForm, TodoForm, TodoFormSet, TodoCheckboxForm
 from django.forms import formset_factory
 from django.forms import modelformset_factory
 from .models import Todo, Lab
-import ipdb
+from django.db.models import Q
 # Create your views here.
 
 def homepage(request):
     if request.user.is_authenticated:
         completed = Lab.objects.filter(users=request.user, completed=True)
-        incompleted = Lab.objects.filter(users=request.user, completed=False)
+        incompleted = Lab.objects.filter(users=request.user, completed=False).order_by('due_date')
+        print(incompleted)
         return render(request, 
                     'main/homepage.html',
                     context={'completed': completed, 'incompleted': incompleted,
@@ -81,7 +82,6 @@ def new_lab(request):
            
             for todo_f in todos_form:
                 if todo_f.is_valid():
-                    ipdb.post_mortem()
                     todo = todo_f.save()
                     lab.todo_set.add(todo)
             return redirect('main:homepage')
@@ -97,8 +97,11 @@ def new_lab(request):
         
 def lab_show(request, lab_id):
     lab = Lab.objects.get(pk=lab_id)
-    completed = Todo.objects.filter(lab__pk=lab_id, completed=True)
-    todos = Todo.objects.filter(lab__pk=lab_id, completed=False)
+    completed = Todo.objects.filter(Q(lab__pk=lab_id) & Q(completed=True))
+    todos = Todo.objects.filter(Q(lab__pk=lab_id) & Q(completed=False))
+
+
+
     checkbox_form = TodoCheckboxForm(lab)
 
     if request.method == "POST":
